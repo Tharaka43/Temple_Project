@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sacred-ivory: #FFFDF8;
+  --color-warm-cream: #F8F2E7;
+  --color-temple-maroon: #842A35;
+  --color-temple-maroon-dark: #6C1E27;
+  --color-temple-maroon-light: #9E3542;
+  --color-lotus-gold: #C58D36;
+  --color-lotus-gold-dark: #A87325;
+  --color-lotus-gold-light: #DFAC55;
+  --color-bodhi-green: #587A4D;
+  --color-bodhi-green-dark: #43603A;
+  --color-bodhi-green-light: #EDF7E7;
+  --color-soft-gold: #FFF1D5;
+  --color-soft-rose: #FCE9E8;
+  --color-dark-text: #302D2B;
+  --color-muted-text: #6B635B;
+  --color-border-beige: #E9DDCC;
+
+  --font-sinhala: 'Noto Sans Sinhala', sans-serif;
+  --font-heading: 'Abhaya Libre', serif;
+  --font-inter: 'Inter', sans-serif;
+}
+
+/* Custom Base Styles */
+body {
+  margin: 0;
+  background-color: #FFFDF8;
+  color: #302D2B;
+  font-family: 'Noto Sans Sinhala', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: 'Abhaya Libre', 'Noto Sans Sinhala', serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F2E7;
+}
+::-webkit-scrollbar-thumb {
+  background: #C58D36;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #842A35;
+}
