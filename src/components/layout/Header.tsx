@@ -27,12 +27,12 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-[22px] font-bold font-['Abhaya_Libre',serif] text-[#842A35] tracking-wide whitespace-nowrap leading-tight group-hover:text-[#6C1E27] transition-colors">
-                ශ්‍රී සුමංගලාරාම විහාරස්ථානය
+                ගම්පහ විහාරස්ථානය
               </span>
               <div className="flex items-center justify-center gap-2 mt-0.5">
                 <span className="h-[1px] w-5 bg-[#C58D36]/50"></span>
                 <span className="text-[11px] sm:text-xs text-[#C58D36] font-medium tracking-wider whitespace-nowrap">
-                  පැලමඩ, කුරුණෑගල
+                  ගම්පහ
                 </span>
                 <span className="h-[1px] w-5 bg-[#C58D36]/50"></span>
               </div>

@@ -172,7 +172,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
               <div>
                 <h2 className="text-sm font-bold font-['Abhaya_Libre',serif] text-[#842A35] leading-tight">
-                  ශ්‍රී සුමංගලාරාම විහාරස්ථානය
+                  ගම්පහ විහාරස්ථානය
                 </h2>
                 <p className="text-[10px] text-[#C58D36] font-medium">බලපාලන පද්ධතිය</p>
               </div>
@@ -264,7 +264,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* Sidebar Bottom Sketch */}
           <div className="pt-3 border-t border-[#E9DDCC] text-center">
             <StupaAndTreeSketch className="w-24 h-16 mx-auto text-[#C58D36] opacity-70" />
-            <p className="text-[10px] text-[#6B635B] mt-1">ශ්‍රී සුමංගලාරාම විහාර පාලන</p>
+            <p className="text-[10px] text-[#6B635B] mt-1">ගම්පහ විහාර පාලන</p>
           </div>
         </aside>
 
@@ -291,7 +291,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <div className="relative z-10 p-5 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35]">
-                ශ්‍රී සුමංගලාරාම විහාරස්ථානයට පරිපාලන පද්ධතියට සාදරයෙන් පිළිගනිමු
+                ගම්පහ විහාරස්ථානය පරිපාලන පද්ධතියට සාදරයෙන් පිළිගනිමු
               </h2>
               <div className="flex items-center gap-2 mt-1.5">
                 <LotusIcon className="w-4 h-4 text-[#C58D36]" />

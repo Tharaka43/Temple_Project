@@ -1,13 +1,13 @@
 import { CalendarDaySlot, ReligiousEvent, BookingRecord, TempleService } from '../types';
 
 export const TEMPLE_INFO = {
-  name: 'ශ්‍රී සුමංගලාරාම විහාරස්ථානය',
-  subtitle: 'පැලමඩ, කුරුණෑගල',
-  fullAddress: 'පැලමඩ, කුරුණෑගල, ශ්‍රී ලංකාව',
-  phone: '+94 37 223 4567',
-  email: 'info@sumangalarama.lk',
+  name: 'ගම්පහ විහාරස්ථානය',
+  subtitle: 'ගම්පහ',
+  fullAddress: 'ගම්පහ, ශ්‍රී ලංකාව',
+  phone: '+94 33 222 4567',
+  email: 'info@gampahaviharaya.lk',
   quote: '“ධර්මෝ රක්ෂති රක්ෂිතස්ස”',
-  welcomeTitle: 'ශ්‍රී සුමංගලාරාම විහාරස්ථානයට සාදරයෙන් පිළිගනිමු',
+  welcomeTitle: 'ගම්පහ විහාරස්ථානයට සාදරයෙන් පිළිගනිමු',
   welcomeSubtitle: 'බුදුරජාණන් වහන්සේගේ පුණ්‍යාලිය අපරිමිත කරුණා සුවපත් වන, ශාන්ත හා පුණ්‍යානුභාවයෙන් පිරුණු පුණ්‍යාලිය විහාරස්ථානය.',
 };
 

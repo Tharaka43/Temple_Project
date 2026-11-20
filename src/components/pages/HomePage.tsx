@@ -63,7 +63,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           <div className="max-w-xl space-y-3 sm:space-y-4">
             
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35] leading-[1.2] tracking-wide">
-              ශ්‍රී සුමංගලාරාම විහාරස්ථානයට <br />
+              ගම්පහ විහාරස්ථානයට <br />
               <span className="text-[#842A35]">සාදරයෙන් පිළිගනිමු</span>
             </h1>
 
