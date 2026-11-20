@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StupaIcon } from '../icons/BuddhistIcons';
-import { Search, ChevronDown, Menu, X, Home } from 'lucide-react';
+import { StupaIcon, AlmsBowlIcon, LotusIcon } from '../icons/BuddhistIcons';
+import { Search, ChevronDown, Menu, X, Home, Calendar, FileEdit, ShieldCheck, Phone, MapPin } from 'lucide-react';
 import type { ScreenType } from '../../types';
 
 interface HeaderProps {
@@ -13,28 +13,31 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <header className="relative z-40 bg-[#FFFDF8] border-b border-[#E9DDCC]/70 shadow-[0_2px_8px_rgba(132,42,53,0.03)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <header className="sticky top-0 z-40 bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#E9DDCC] shadow-[0_2px_12px_rgba(132,42,53,0.05)]">
+      {/* Subtle Top Gold Sacred Accent Line */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-[#E9DDCC] via-[#C58D36] to-[#E9DDCC] opacity-70"></div>
+
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           
           {/* Left: Temple Logo & Name (Strictly Single Line, No Wrapping) */}
           <div 
-            onClick={() => onNavigate('home')} 
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }} 
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0"
           >
-            <div className="p-1.5 bg-[#F8F2E7] border border-[#C58D36]/40 rounded-full group-hover:scale-105 transition-transform shadow-2xs shrink-0">
-              <StupaIcon className="w-10 h-10 text-[#C58D36]" />
+            <div className="p-1 sm:p-1.5 bg-gradient-to-b from-[#FFFDF8] to-[#F8F2E7] border border-[#C58D36]/50 rounded-full group-hover:scale-105 transition-transform shadow-xs shrink-0">
+              <StupaIcon className="w-8 h-8 sm:w-10 sm:h-10 text-[#C58D36]" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl sm:text-[22px] font-bold font-['Abhaya_Libre',serif] text-[#842A35] tracking-wide whitespace-nowrap leading-tight group-hover:text-[#6C1E27] transition-colors">
+              <span className="text-lg sm:text-[22px] font-bold font-['Abhaya_Libre',serif] text-[#842A35] tracking-wide whitespace-nowrap leading-tight group-hover:text-[#6C1E27] transition-colors">
                 ගම්පහ විහාරස්ථානය
               </span>
-              <div className="flex items-center justify-center gap-2 mt-0.5">
-                <span className="h-[1px] w-5 bg-[#C58D36]/50"></span>
-                <span className="text-[11px] sm:text-xs text-[#C58D36] font-medium tracking-wider whitespace-nowrap">
+              <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
+                <span className="h-[1px] w-3.5 sm:w-5 bg-[#C58D36]/60"></span>
+                <span className="text-[10px] sm:text-xs text-[#C58D36] font-semibold tracking-wider whitespace-nowrap">
                   ගම්පහ
                 </span>
-                <span className="h-[1px] w-5 bg-[#C58D36]/50"></span>
+                <span className="h-[1px] w-3.5 sm:w-5 bg-[#C58D36]/60"></span>
               </div>
             </div>
           </div>
@@ -109,19 +112,30 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
 
           </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile Actions: Quick Book + Search + Hamburger */}
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
             <button
-              onClick={() => onNavigate('admin')}
-              className="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#842A35] text-white"
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="p-2 text-[#842A35] bg-[#F8F2E7]/80 hover:bg-[#F8F2E7] border border-[#E9DDCC] rounded-full transition-colors"
+              aria-label="සොයන්න"
             >
-              Admin
+              <Search className="w-4 h-4 text-[#C58D36]" />
             </button>
+
+            <button
+              onClick={() => { onNavigate('calendar'); setMobileMenuOpen(false); }}
+              className="px-2.5 py-1.5 text-[11px] font-semibold rounded-full bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white shadow-2xs flex items-center gap-1"
+            >
+              <AlmsBowlIcon className="w-3.5 h-3.5 text-amber-200" />
+              <span>දාන</span>
+            </button>
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-[#842A35] hover:bg-[#F8F2E7] rounded-lg"
+              className="p-2 text-[#842A35] bg-[#F8F2E7] border border-[#E9DDCC] hover:border-[#C58D36] rounded-xl transition-all"
+              aria-label="මෙනුව"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
@@ -129,8 +143,8 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
 
         {/* Search Bar Dropdown */}
         {searchOpen && (
-          <div className="py-2.5 px-4 bg-[#F8F2E7] border-t border-[#E9DDCC] flex items-center gap-2 animate-fadeIn">
-            <Search className="w-4 h-4 text-[#C58D36]" />
+          <div className="py-2.5 px-3.5 mb-2 bg-[#F8F2E7] border border-[#E9DDCC] rounded-xl flex items-center gap-2 shadow-xs">
+            <Search className="w-4 h-4 text-[#C58D36] shrink-0" />
             <input 
               type="text" 
               placeholder="විහාරස්ථානයේ තොරතුරු, දාන දින, වැඩසටහන් සොයන්න..."
@@ -139,41 +153,95 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
             />
             <button 
               onClick={() => setSearchOpen(false)}
-              className="text-xs text-[#842A35] hover:underline"
+              className="text-xs font-semibold text-[#842A35] px-2 py-0.5 rounded-md hover:bg-[#E9DDCC]/50 shrink-0"
             >
               වසන්න
             </button>
           </div>
         )}
 
-        {/* Mobile Navigation Drawer */}
+        {/* Premium Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden py-3 border-t border-[#E9DDCC] space-y-1.5 text-sm font-medium text-[#302D2B]">
-            <button
-              onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F8F2E7] hover:text-[#842A35] flex items-center gap-2"
-            >
-              <Home className="w-4 h-4 text-[#C58D36]" />
-              මුල් පිටුව
-            </button>
-            <button
-              onClick={() => { onNavigate('calendar'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F8F2E7] hover:text-[#842A35]"
-            >
-              දාන දින දර්ශනය
-            </button>
-            <button
-              onClick={() => { onNavigate('booking'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F8F2E7] hover:text-[#842A35]"
-            >
-              දානය වෙන්කරවා ගැනීම
-            </button>
-            <button
-              onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-[#F8F2E7] text-[#842A35] font-semibold"
-            >
-              පරිපාලන පුවරුව (Admin)
-            </button>
+          <div className="lg:hidden py-4 px-2 border-t border-[#E9DDCC] bg-[#FFFDF8] space-y-3 rounded-b-2xl shadow-lg">
+            <div className="grid grid-cols-1 gap-1.5 text-sm font-medium text-[#302D2B]">
+              <button
+                onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between transition-all ${
+                  currentScreen === 'home'
+                    ? 'bg-[#F8F2E7] text-[#842A35] font-bold border border-[#C58D36]/40 shadow-2xs'
+                    : 'hover:bg-[#F8F2E7]/60'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Home className="w-4 h-4 text-[#C58D36]" />
+                  <span>මුල් පිටුව</span>
+                </span>
+                {currentScreen === 'home' && <LotusIcon className="w-3.5 h-3.5 text-[#C58D36]" />}
+              </button>
+
+              <button
+                onClick={() => { onNavigate('calendar'); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between transition-all ${
+                  currentScreen === 'calendar'
+                    ? 'bg-[#F8F2E7] text-[#842A35] font-bold border border-[#C58D36]/40 shadow-2xs'
+                    : 'hover:bg-[#F8F2E7]/60'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Calendar className="w-4 h-4 text-[#C58D36]" />
+                  <span>දාන දින දර්ශනය</span>
+                </span>
+                {currentScreen === 'calendar' && <LotusIcon className="w-3.5 h-3.5 text-[#C58D36]" />}
+              </button>
+
+              <button
+                onClick={() => { onNavigate('booking'); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between transition-all ${
+                  currentScreen === 'booking'
+                    ? 'bg-[#F8F2E7] text-[#842A35] font-bold border border-[#C58D36]/40 shadow-2xs'
+                    : 'hover:bg-[#F8F2E7]/60'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <FileEdit className="w-4 h-4 text-[#C58D36]" />
+                  <span>දානය වෙන්කරවා ගැනීම</span>
+                </span>
+                {currentScreen === 'booking' && <LotusIcon className="w-3.5 h-3.5 text-[#C58D36]" />}
+              </button>
+
+              <button
+                onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
+                className="w-full text-left px-3.5 py-2.5 rounded-xl bg-[#FFF1D5]/60 border border-[#C58D36]/30 text-[#842A35] font-semibold flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-[#842A35]" />
+                  <span>පරිපාලන පුවරුව (Admin)</span>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#842A35] text-white">කළමනාකරණ</span>
+              </button>
+            </div>
+
+            {/* Mobile Drawer Contact Strip & Primary CTA */}
+            <div className="pt-2.5 border-t border-[#E9DDCC] flex flex-col gap-2.5 px-1">
+              <div className="flex items-center justify-between text-xs text-[#6B635B]">
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#842A35]" />
+                  <span>ගම්පහ, ශ්‍රී ලංකාව</span>
+                </span>
+                <span className="flex items-center gap-1.5 font-medium text-[#842A35]">
+                  <Phone className="w-3.5 h-3.5 text-[#C58D36]" />
+                  <span>+94 33 222 4567</span>
+                </span>
+              </div>
+
+              <button
+                onClick={() => { onNavigate('booking'); setMobileMenuOpen(false); }}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm"
+              >
+                <AlmsBowlIcon className="w-4 h-4 text-amber-200" />
+                <span>අදම දානයක් වෙන්කරවා ගන්න</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
