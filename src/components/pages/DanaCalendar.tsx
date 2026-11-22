@@ -18,14 +18,18 @@ import {
   Lock, 
   Phone, 
   Mail,
-  CheckCircle2
+  CheckCircle2,
+  Utensils,
+  Coins,
+  Sparkles,
+  Info
 } from 'lucide-react';
-import { FEBRUARY_2025_DAYS } from '../../data/mockData';
-import type { CalendarDaySlot, DanaCategory, ScreenType } from '../../types';
+import { FEBRUARY_2025_DAYS, TEMPLE_INFO } from '../../data/mockData';
+import type { CalendarDaySlot, DanaCategory, ScreenType, ContributionType } from '../../types';
 
 interface DanaCalendarProps {
   onNavigate: (screen: ScreenType) => void;
-  onSelectBookingDate?: (dateStr: string, danaType: string) => void;
+  onSelectBookingDate?: (dateStr: string, danaType: string, contributionType?: ContributionType) => void;
 }
 
 export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelectBookingDate }) => {
@@ -33,6 +37,8 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
   const [selectedDay, setSelectedDay] = useState<CalendarDaySlot>(
     FEBRUARY_2025_DAYS.find(d => d.date === 14 && d.isCurrentMonth) || FEBRUARY_2025_DAYS[19]
   );
+  // Active meal tab within selected day card ('heel' or 'dawal')
+  const [activeMealTab, setActiveMealTab] = useState<'heel' | 'dawal'>('heel');
 
   const danaTypeNames: Record<DanaCategory, string> = {
     heel: 'හීල් දානය',
@@ -43,11 +49,21 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
 
   const weekdayNames = ['ඉරිදා', 'සඳුදා', 'අඟහරුවාදා', 'බදාදා', 'බ්‍රහස්පතින්දා', 'සිකුරාදා', 'සෙනසුරාදා'];
 
-  const handleBookingProceed = () => {
+  const currentMealSlots = activeMealTab === 'heel' ? selectedDay.heelSlots : selectedDay.dawalSlots;
+  const maxCapacity = currentMealSlots?.maxCapacity || 4;
+  const currentBooked = currentMealSlots?.currentBooked || 0;
+  const availableSlots = Math.max(0, maxCapacity - currentBooked);
+  const hasPrep = currentMealSlots?.hasPreparation || false;
+  const hasFin = currentMealSlots?.hasFinancial || false;
+  const isFullyBooked = availableSlots === 0;
+
+  const handleBookingProceed = (contributionType: ContributionType = 'preparation') => {
+    const mealTitle = activeMealTab === 'heel' ? 'හීල් දානය' : 'දවල් දානය';
     if (onSelectBookingDate) {
       onSelectBookingDate(
         `2025 පෙබරවාරි ${selectedDay.date} (${weekdayNames[selectedDay.dayOfWeek]})`,
-        danaTypeNames[selectedCategory]
+        mealTitle,
+        contributionType
       );
     }
     onNavigate('booking');
@@ -98,45 +114,38 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
       return 'border-[#842A35]/20 bg-[#FCE9E8]/75 hover:border-[#842A35]/40';
     }
     if (slot.heelStatus === 'joint' || slot.dawalStatus === 'joint') {
-      return 'border-[#C58D36]/35 bg-[#FFF1D5]/65 hover:border-[#C58D36]';
+      return 'border-[#C58D36]/40 bg-[#FFF1D5]/40 hover:bg-[#FFF1D5]/70';
     }
-    return 'border-[#587A4D]/25 bg-[#EDF7E7]/65 hover:border-[#587A4D]/60 hover:bg-[#EDF7E7]';
+    return 'border-[#E9DDCC] bg-[#FFFDF8] hover:border-[#C58D36]/60 hover:bg-[#F8F2E7]/40';
   };
 
   return (
-    <div className="bg-[#FFFDF8] min-h-screen relative overflow-x-hidden">
+    <div className="bg-[#FFFDF8] min-h-screen relative overflow-x-hidden font-['Noto_Sans_Sinhala',sans-serif]">
       
       {/* 🌿 Bo Leaves Branch on Top Left */}
       <BoLeavesTopLeft />
 
-      {/* 1. Header Banner */}
-      <section className="relative overflow-hidden bg-[#F8F2E7] border-b border-[#E9DDCC]">
-        <div className="absolute inset-0 z-0 opacity-25">
-          <img 
-            src="https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=80" 
-            alt="Temple Courtyard" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF8]/60 via-transparent to-[#F8F2E7]"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-7 pb-5 sm:pt-10 sm:pb-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35]">
-            දාන දින දර්ශනය
-          </h1>
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-1 px-2">
-            <LotusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C58D36] shrink-0" />
-            <p className="text-xs sm:text-sm text-[#6B635B] font-['Noto_Sans_Sinhala',sans-serif] leading-tight">
-              විහාරස්ථානයේ දානය පිළිබඳ වෙන්කරගැනීම සඳහා මාසික දින දර්ශනය හා දාන විස්තර බලන්න.
-            </p>
-            <LotusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C58D36] shrink-0" />
+      {/* 1. Category Switcher Tabs */}
+      <section className="bg-[#F8F2E7] border-b border-[#E9DDCC] pt-5 sm:pt-6 pb-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <span className="text-[10px] sm:text-xs font-bold text-[#C58D36] tracking-wider uppercase">
+                {TEMPLE_INFO.name} • {TEMPLE_INFO.subtitle}
+              </span>
+              <h1 className="text-xl sm:text-3xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35]">
+                දාන දින දර්ශනය හා සමූහ දාන වෙන්කිරීම
+              </h1>
+            </div>
+            <LotusIcon className="w-6 h-6 sm:w-8 sm:h-8 text-[#C58D36] shrink-0" />
           </div>
 
-          {/* Dana Category Pills: 2x2 Grid on Mobile, Flex on Desktop */}
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-3 mt-4 sm:mt-5 max-w-xl sm:max-w-none mx-auto">
+          {/* 4 Tabs */}
+          <div className="flex items-center gap-1.5 sm:gap-3 overflow-x-auto pb-1 scrollbar-none">
             
             <button
-              onClick={() => setSelectedCategory('heel')}
+              onClick={() => { setSelectedCategory('heel'); setActiveMealTab('heel'); }}
               className={`flex items-center justify-center gap-1.5 sm:gap-2.5 px-3.5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-xs ${
                 selectedCategory === 'heel'
                   ? 'bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white shadow-[0_4px_12px_rgba(132,42,53,0.3)] border border-[#C58D36]/50'
@@ -148,7 +157,7 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
             </button>
 
             <button
-              onClick={() => setSelectedCategory('dawal')}
+              onClick={() => { setSelectedCategory('dawal'); setActiveMealTab('dawal'); }}
               className={`flex items-center justify-center gap-1.5 sm:gap-2.5 px-3.5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-xs ${
                 selectedCategory === 'dawal'
                   ? 'bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white shadow-[0_4px_12px_rgba(132,42,53,0.3)] border border-[#C58D36]/50'
@@ -191,8 +200,8 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
       <section className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
           
-          {/* Left Column: Calendar (8 cols on lg) */}
-          <div className="lg:col-span-8 bg-[#FFFDF8] border border-[#E9DDCC] rounded-2xl shadow-[0_4px_20px_rgba(132,42,53,0.05)] p-2.5 sm:p-5">
+          {/* Left Column: Calendar Grid (7 cols on lg) */}
+          <div className="lg:col-span-7 bg-[#FFFDF8] border border-[#E9DDCC] rounded-2xl shadow-[0_4px_20px_rgba(132,42,53,0.05)] p-2.5 sm:p-5">
             
             {/* Month Navigation */}
             <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-[#E9DDCC] mb-2 sm:mb-3 px-1">
@@ -298,7 +307,7 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
                       </div>
                     )}
 
-                    {/* Slots for Heel and Dawal (Zero wrapping, perfectly side-by-side) */}
+                    {/* Slots for Heel and Dawal */}
                     {!isBlocked && (
                       <div className="space-y-0.5 mt-0.5 text-[9px] sm:text-[11px]">
                         
@@ -330,11 +339,11 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
               <div className="min-w-0">
                 <span className="text-[10px] text-[#6B635B] font-semibold block">තෝරාගත් දාන දිනය:</span>
                 <span className="text-xs font-extrabold text-[#842A35] truncate block">
-                  2025 පෙබරවාරි {selectedDay.date} • {danaTypeNames[selectedCategory]}
+                  2025 පෙබරවාරි {selectedDay.date} • {activeMealTab === 'heel' ? 'හීල් දානය' : 'දවල් දානය'}
                 </span>
               </div>
               <button
-                onClick={handleBookingProceed}
+                onClick={() => handleBookingProceed('preparation')}
                 className="px-3.5 py-2 rounded-full bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white text-xs font-semibold flex items-center gap-1 shrink-0 shadow-xs active:scale-95 transition-transform"
               >
                 <span>වෙන්කරගන්න</span>
@@ -360,7 +369,7 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
                   <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#C58D36] text-white flex items-center justify-center shrink-0">
                     <Users className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
                   </span>
-                  <span>සීමිත ආසන ඇත</span>
+                  <span>සමූහ දානය (හවුල්)</span>
                 </div>
 
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
@@ -386,87 +395,234 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
 
           </div>
 
-          {/* Right Column: Selected Dana Details & Guidelines (4 cols on lg) */}
-          <div className="lg:col-span-4 space-y-4 sm:space-y-5">
+          {/* Right Column: Selected Dana Details & Split Allocation Hub (5 cols on lg) */}
+          <div className="lg:col-span-5 space-y-4 sm:space-y-5">
             
-            {/* Card 1: Selected Dana Details */}
-            <div className="bg-[#FFFDF8] border border-[#E9DDCC] rounded-2xl p-4 sm:p-5 shadow-[0_4px_20px_rgba(132,42,53,0.05)] space-y-3">
+            {/* Card 1: Selected Dana & Multi-Devotee Split Hub */}
+            <div className="bg-[#FFFDF8] border-2 border-[#C58D36]/40 rounded-2xl p-4 sm:p-5 shadow-[0_6px_25px_rgba(132,42,53,0.07)] space-y-3.5">
+              
+              {/* Header with Date */}
               <div className="flex items-center justify-between border-b border-[#E9DDCC] pb-2.5">
                 <div className="flex items-center gap-2">
                   <CalendarIcon className="w-4 h-4 text-[#C58D36]" />
                   <h3 className="text-sm sm:text-base font-bold font-['Abhaya_Libre',serif] text-[#842A35]">
-                    තෝරාගත් දාන විස්තර
+                    තෝරාගත් දින දාන විස්තර
                   </h3>
                 </div>
-                <LotusIcon className="w-4 h-4 text-[#C58D36]" />
+                <span className="px-2.5 py-0.5 rounded-full bg-[#FFF1D5] text-[#842A35] text-[11px] font-bold border border-[#C58D36]/40">
+                  පෙබ. {selectedDay.date} ({weekdayNames[selectedDay.dayOfWeek]})
+                </span>
               </div>
 
-              {/* Photo */}
-              <div className="h-32 rounded-xl overflow-hidden border border-[#E9DDCC] relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80" 
-                  alt="Dana Offering Feast"
-                  className="w-full h-full object-cover" 
-                />
-                <div className="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-[#FFFDF8]/90 text-[#587A4D] text-[10px] font-bold border border-[#587A4D]/30">
-                  වෙන්කරගත හැක
+              {/* Meal Selector Tabs (හීල් vs දවල්) */}
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-[#F8F2E7] rounded-xl border border-[#E9DDCC]">
+                <button
+                  type="button"
+                  onClick={() => setActiveMealTab('heel')}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                    activeMealTab === 'heel'
+                      ? 'bg-[#842A35] text-white shadow-xs'
+                      : 'text-[#6B635B] hover:text-[#842A35]'
+                  }`}
+                >
+                  <AlmsBowlIcon className={`w-3.5 h-3.5 ${activeMealTab === 'heel' ? 'text-amber-200' : 'text-[#C58D36]'}`} />
+                  <span>හීල් දානය (පෙ.ව. 06.30)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveMealTab('dawal')}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                    activeMealTab === 'dawal'
+                      ? 'bg-[#842A35] text-white shadow-xs'
+                      : 'text-[#6B635B] hover:text-[#842A35]'
+                  }`}
+                >
+                  <RicePlateIcon className={`w-3.5 h-3.5 ${activeMealTab === 'dawal' ? 'text-amber-200' : 'text-[#C58D36]'}`} />
+                  <span>දවල් දානය (පෙ.ව. 11.00)</span>
+                </button>
+              </div>
+
+              {/* Multi-Devotee Capacity Progress Card */}
+              <div className="p-3 rounded-xl bg-gradient-to-br from-[#FFFDF8] via-[#F8F2E7]/60 to-[#FFF1D5]/40 border border-[#E9DDCC] space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-[#842A35]" />
+                    <span className="font-bold text-[#842A35]">දායකත්ව ධාරිතාව (සමූහ දාන):</span>
+                  </div>
+                  <span className={`font-extrabold px-2 py-0.5 rounded-full text-[10px] ${
+                    isFullyBooked 
+                      ? 'bg-rose-100 text-rose-800 border border-rose-300' 
+                      : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  }`}>
+                    {currentBooked} / {maxCapacity} භාරගෙන ඇත ({availableSlots} ක් ඉතිරියි)
+                  </span>
+                </div>
+
+                {/* Progress Bar (Visual Slots) */}
+                <div className="grid grid-cols-4 gap-1.5">
+                  {Array.from({ length: maxCapacity }).map((_, idx) => {
+                    const isTaken = idx < currentBooked;
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`h-2.5 rounded-full transition-all ${
+                          isTaken 
+                            ? 'bg-gradient-to-r from-[#C58D36] to-[#842A35]' 
+                            : 'bg-stone-200/90 border border-stone-300'
+                        }`}
+                        title={isTaken ? `කොටස ${idx + 1}: භාරගෙන ඇත` : `කොටස ${idx + 1}: විවෘතයි`}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Existing Allocations List (Who booked what) */}
+                <div className="pt-2 border-t border-[#E9DDCC]/70 space-y-1.5 text-xs">
+                  <span className="text-[10px] font-bold text-[#6B635B] uppercase tracking-wider block">
+                    දැනට ලියාපදිංචි දායකත්වයන්:
+                  </span>
+
+                  {currentMealSlots?.allocations && currentMealSlots.allocations.length > 0 ? (
+                    currentMealSlots.allocations.map((alloc, idx) => (
+                      <div 
+                        key={idx}
+                        className="flex items-center justify-between p-2 rounded-lg bg-[#FFFDF8] border border-[#E9DDCC]"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {alloc.type === 'preparation' ? (
+                            <span className="w-6 h-6 rounded-md bg-[#EDF7E7] text-[#587A4D] flex items-center justify-center shrink-0 border border-[#587A4D]/30" title="සම්පාදනය">
+                              <Utensils className="w-3.5 h-3.5" />
+                            </span>
+                          ) : alloc.type === 'financial' ? (
+                            <span className="w-6 h-6 rounded-md bg-[#FFF1D5] text-[#C58D36] flex items-center justify-center shrink-0 border border-[#C58D36]/40" title="බරපැන">
+                              <Coins className="w-3.5 h-3.5" />
+                            </span>
+                          ) : (
+                            <span className="w-6 h-6 rounded-md bg-[#FCE9E8] text-[#842A35] flex items-center justify-center shrink-0 border border-[#842A35]/30" title="සම්පූර්ණ">
+                              <Sparkles className="w-3.5 h-3.5" />
+                            </span>
+                          )}
+                          <div className="min-w-0">
+                            <span className="font-bold text-[#302D2B] truncate block text-[11px] sm:text-xs">
+                              {alloc.devoteeName}
+                            </span>
+                            <span className="text-[9.5px] text-[#6B635B]">
+                              {alloc.type === 'preparation' 
+                                ? '🍲 ආහාර සම්පාදනය (පිස රැගෙන ඒම)' 
+                                : alloc.type === 'financial' 
+                                  ? '💰 බරපැන දැරීම (මූල්‍ය/වියදම්)' 
+                                  : '🌟 සම්පූර්ණ දානය (තනිව)'}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold shrink-0">
+                          තහවුරුයි
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-2 rounded-lg bg-[#EDF7E7]/60 border border-[#587A4D]/20 text-[#587A4D] text-[11px] flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>මෙම දාන වේලාව සඳහා තවම කිසිවෙකු ලියාපදිංචි වී නැත. සියලු අවස්ථා විවෘතයි!</span>
+                    </div>
+                  )}
+
+                  {/* Open Slot indicators if not full */}
+                  {!isFullyBooked && (
+                    <div className="p-2 rounded-lg bg-[#FFF1D5]/40 border border-[#C58D36]/30 text-[10.5px] text-[#842A35] flex items-center justify-between">
+                      <span>
+                        තව දායකයන් <strong>{availableSlots}</strong> දෙනෙකුට (සම්පාදනය හෝ බරපැන) භාරගත හැක.
+                      </span>
+                      <span className="w-2 h-2 rounded-full bg-[#C58D36] animate-pulse"></span>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Information Rows */}
-              <div className="space-y-1.5 text-xs sm:text-[13px] text-[#302D2B]">
-                <div className="flex items-center justify-between py-1.5 border-b border-[#E9DDCC]/50">
-                  <span className="text-[#6B635B] flex items-center gap-1.5">
-                    <CalendarIcon className="w-3.5 h-3.5 text-[#C58D36]" />
-                    <span>දානය දිනය :</span>
-                  </span>
-                  <span className="font-bold text-[#842A35]">
-                    2025 පෙබරවාරි {selectedDay.date} ({weekdayNames[selectedDay.dayOfWeek]})
-                  </span>
+              {/* 3 Action Buttons to Split Dana: සම්පාදනය / බරපැන / සම්පූර්ණ */}
+              <div className="space-y-2 pt-1">
+                <div className="text-[11px] font-bold text-[#842A35] font-['Abhaya_Libre',serif]">
+                  ඔබ කැමති දායකත්ව ආකාරය තෝරා වෙන්කරගන්න:
                 </div>
 
-                <div className="flex items-center justify-between py-1.5 border-b border-[#E9DDCC]/50">
-                  <span className="text-[#6B635B] flex items-center gap-1.5">
-                    <AlmsBowlIcon className="w-3.5 h-3.5 text-[#C58D36]" />
-                    <span>දාන වර්ගය :</span>
-                  </span>
-                  <span className="font-semibold">{danaTypeNames[selectedCategory]}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  
+                  {/* Option 1: සම්පාදනය (Food Preparation) */}
+                  <button
+                    type="button"
+                    onClick={() => handleBookingProceed('preparation')}
+                    disabled={isFullyBooked}
+                    className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                      isFullyBooked
+                        ? 'opacity-50 cursor-not-allowed bg-stone-100 border-stone-200'
+                        : hasPrep
+                          ? 'border-[#C58D36] bg-[#FFF1D5]/50 hover:bg-[#FFF1D5]'
+                          : 'border-[#587A4D]/40 bg-[#EDF7E7]/70 hover:bg-[#EDF7E7] hover:border-[#587A4D]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-[#302D2B] flex items-center gap-1">
+                        <Utensils className="w-3.5 h-3.5 text-[#587A4D]" />
+                        <span>ආහාර සම්පාදනය</span>
+                      </span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-white border border-[#587A4D]/30 text-[#587A4D] font-bold">
+                        {hasPrep ? 'හවුල්' : 'විවෘතයි'}
+                      </span>
+                    </div>
+                    <p className="text-[9.5px] text-[#6B635B] leading-tight">
+                      ආහාර පිස නියමිත වේලාවට විහාරස්ථානයට රැගෙන ඒම.
+                    </p>
+                  </button>
+
+                  {/* Option 2: බරපැන (Financial Sponsorship) */}
+                  <button
+                    type="button"
+                    onClick={() => handleBookingProceed('financial')}
+                    disabled={isFullyBooked}
+                    className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                      isFullyBooked
+                        ? 'opacity-50 cursor-not-allowed bg-stone-100 border-stone-200'
+                        : 'border-[#C58D36]/50 bg-[#FFF1D5]/60 hover:bg-[#FFF1D5] hover:border-[#C58D36]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-[#842A35] flex items-center gap-1">
+                        <Coins className="w-3.5 h-3.5 text-[#C58D36]" />
+                        <span>බරපැන දැරීම</span>
+                      </span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-white border border-[#C58D36]/40 text-[#842A35] font-bold">
+                        විවෘතයි
+                      </span>
+                    </div>
+                    <p className="text-[9.5px] text-[#6B635B] leading-tight">
+                      දානයේ වියදම්, පිරිවැය හෝ අවශ්‍ය ද්‍රව්‍ය දැරීම.
+                    </p>
+                  </button>
+
                 </div>
 
-                <div className="flex items-center justify-between py-1.5 border-b border-[#E9DDCC]/50">
-                  <span className="text-[#6B635B] flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5 text-[#C58D36]" />
-                    <span>ලබා ගත හැකි ආසන :</span>
-                  </span>
-                  <span className="font-bold text-[#587A4D]">12</span>
-                </div>
-
-                <div className="flex items-center justify-between py-1.5 border-b border-[#E9DDCC]/50">
-                  <span className="text-[#6B635B] flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[#C58D36]" />
-                    <span>විහාරස්ථාන දුරකථන :</span>
-                  </span>
-                  <span className="font-medium">+94 33 222 4567</span>
-                </div>
-
-                <div className="flex items-center justify-between py-1.5">
-                  <span className="text-[#6B635B] flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#C58D36]" />
-                    <span>විද්‍යුත් තැපැල :</span>
-                  </span>
-                  <span className="font-medium text-xs">info@gampahaviharaya.lk</span>
-                </div>
+                {/* Option 3: Full Sole Dana Button */}
+                {currentBooked === 0 && (
+                  <button
+                    type="button"
+                    onClick={() => handleBookingProceed('full')}
+                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                    <span>සම්පූර්ණ දානයම තනිව භාරගන්න (සම්පාදනය + බරපැන)</span>
+                  </button>
+                )}
               </div>
 
-              {/* Big CTA Button */}
-              <button
-                onClick={handleBookingProceed}
-                className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-full bg-gradient-to-r from-[#842A35] to-[#6C1E27] text-white font-semibold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
-              >
-                <AlmsBowlIcon className="w-4 h-4 text-amber-200" />
-                <span>දානය වෙන්කරගන්න</span>
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </button>
+              {/* Devotee Notification & Coordination Notice */}
+              <div className="p-2.5 rounded-xl bg-[#F8F2E7] border border-[#E9DDCC] text-[10.5px] text-[#6B635B] flex items-start gap-2">
+                <Info className="w-4 h-4 text-[#C58D36] shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong className="text-[#842A35]">දායකයන් දැනුවත් කිරීම:</strong> දානය භාරගත් පසු සම්පාදනය කරන සහ බරපැන දරන සියලුම දායකයන් සහ විහාරස්ථානය අතර SMS & WhatsApp මඟින් තොරතුරු සම්බන්ධීකරණය කරනු ලැබේ.
+                </p>
+              </div>
+
             </div>
 
             {/* Card 2: Upcoming Special Days */}
@@ -506,20 +662,6 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
                     <span className="text-[10px] text-[#C58D36] font-semibold">2025 පෙබ. 22 (සෙනසුරාදා)</span>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-[#F8F2E7]/70 border border-[#E9DDCC]">
-                  <img 
-                    src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=150&q=80" 
-                    alt="Seela Festival" 
-                    className="w-11 h-11 rounded-lg object-cover shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-bold font-['Abhaya_Libre',serif] text-[#842A35] truncate">
-                      මහා සීල වන්දනා උත්සවය
-                    </h4>
-                    <span className="text-[10px] text-[#C58D36] font-semibold">2025 මාර්. 01 (සෙනසුරාදා)</span>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -535,19 +677,19 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
               <ul className="space-y-1.5 text-[11px] sm:text-xs text-[#302D2B]">
                 <li className="flex items-start gap-1.5">
                   <Check className="w-3.5 h-3.5 text-[#587A4D] shrink-0 mt-0.5" />
-                  <span>දානය අවම දින 3කට පෙර වෙන්කරගැනීම නිර්දේශ කෙරේ.</span>
+                  <span>එක් දාන වේලාවකට (හීල්/දවල්) උපරිම 4-5 දෙනෙකුට සමූහව එක්විය හැක.</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <Check className="w-3.5 h-3.5 text-[#587A4D] shrink-0 mt-0.5" />
-                  <span>හීල් දානය, දවල් දානය, සංඝික දානය සහ ගිලන්පස වෙන්කරගත හැක.</span>
+                  <span>ආහාර සම්පාදනය හෝ බරපැන දැරීම තනිව හෝ හවුලේ භාරගත හැක.</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <Check className="w-3.5 h-3.5 text-[#587A4D] shrink-0 mt-0.5" />
-                  <span>එක් දිනක හීල් හා දවල් දෙකම වෙන්කරගැනීමේ හැකියාව ඇත.</span>
+                  <span>හීල් දානය පෙ.ව. 06.30 ට පෙර සහ දවල් දානය පෙ.ව. 11.00 ට පෙර ගෙන ආ යුතුය.</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <Check className="w-3.5 h-3.5 text-[#587A4D] shrink-0 mt-0.5" />
-                  <span>පොහොය හා විශේෂ දිනවල දාන කටයුතු විහාරස්ථානය විසින් සංවිධානය කරනු ලබයි.</span>
+                  <span>විමසීම් සඳහා: {TEMPLE_INFO.phone}</span>
                 </li>
               </ul>
             </div>
@@ -560,10 +702,10 @@ export const DanaCalendar: React.FC<DanaCalendarProps> = ({ onNavigate, onSelect
       {/* 3. Bottom Notice Banner */}
       <div className="mt-2 sm:mt-4">
         <NoticeBanner 
-          title="විශේෂ දැනුම්දීම"
-          message="මහ සුළුවාම් පොහොය දිනය (2025 පෙබරවාරි 08) විශේෂ වැඩසටහන් හා සංඝික දානය සඳහා ස්ථාන සීමිත බැවින්, ඉක්මනින් වෙන්කරගැනීම අනිවාර්යයි."
-          buttonText="වැඩිදුර විස්තර"
-          onAction={handleBookingProceed}
+          title="විශේෂ දැනුම්දීම - සමූහ දාන සහභාගීත්වය"
+          message="ශ්‍රී සුදර්ශන ධර්ම නිකේතනයේ දානමය පින්කම් සඳහා තනිව මෙන්ම පවුල් කිහිපයක් එක්ව සම්පාදනය හෝ බරපැන දරමින් හවුලේ දානය භාරගැනීමේ පහසුකම සලසා ඇත."
+          buttonText="දානයක් වෙන්කරගන්න"
+          onAction={() => handleBookingProceed('preparation')}
         />
       </div>
 

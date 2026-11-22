@@ -29,13 +29,13 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
               <StupaIcon className="w-8 h-8 sm:w-10 sm:h-10 text-[#C58D36]" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg sm:text-[22px] font-bold font-['Abhaya_Libre',serif] text-[#842A35] tracking-wide whitespace-nowrap leading-tight group-hover:text-[#6C1E27] transition-colors">
-                ගම්පහ විහාරස්ථානය
+              <span className="text-base sm:text-[20px] font-bold font-['Abhaya_Libre',serif] text-[#842A35] tracking-wide whitespace-nowrap leading-tight group-hover:text-[#6C1E27] transition-colors">
+                ශ්‍රී සුදර්ශන ධර්ම නිකේතනය
               </span>
               <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                 <span className="h-[1px] w-3.5 sm:w-5 bg-[#C58D36]/60"></span>
                 <span className="text-[10px] sm:text-xs text-[#C58D36] font-semibold tracking-wider whitespace-nowrap">
-                  ගම්පහ
+                  හෙට්ටියාදෙණිය, ගම්පහ
                 </span>
                 <span className="h-[1px] w-3.5 sm:w-5 bg-[#C58D36]/60"></span>
               </div>
@@ -226,7 +226,7 @@ export const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate }) => 
               <div className="flex items-center justify-between text-xs text-[#6B635B]">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#842A35]" />
-                  <span>ගම්පහ, ශ්‍රී ලංකාව</span>
+                  <span>හෙට්ටියාදෙණිය, ගම්පහ</span>
                 </span>
                 <span className="flex items-center gap-1.5 font-medium text-[#842A35]">
                   <Phone className="w-3.5 h-3.5 text-[#C58D36]" />

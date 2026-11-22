@@ -65,11 +65,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             {/* Sacred Heritage Pill Badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF1D5]/90 border border-[#C58D36]/40 text-[#842A35] text-[11px] sm:text-xs font-semibold shadow-2xs">
               <Sparkles className="w-3 h-3 text-[#C58D36]" />
-              <span>ඓතිහාසික පුණ්‍යභූමිය • ගම්පහ</span>
+              <span>ඓතිහාසික පුණ්‍යභූමිය • හෙට්ටියාදෙණිය, ගම්පහ</span>
             </div>
 
-            <h1 className="text-[26px] sm:text-4xl md:text-5xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35] leading-[1.2] tracking-wide drop-shadow-2xs">
-              ගම්පහ විහාරස්ථානයට <br />
+            <h1 className="text-[24px] sm:text-4xl md:text-5xl font-extrabold font-['Abhaya_Libre',serif] text-[#842A35] leading-[1.2] tracking-wide drop-shadow-2xs">
+              ශ්‍රී සුදර්ශන ධර්ම නිකේතනයට <br />
               <span className="text-[#842A35]">සාදරයෙන් පිළිගනිමු</span>
             </h1>
 

@@ -23,15 +23,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               <div>
                 <h3 className="text-xl font-bold font-['Abhaya_Libre',serif] text-[#842A35]">
-                  ගම්පහ විහාරස්ථානය
+                  ශ්‍රී සුදර්ශන ධර්ම නිකේතනය
                 </h3>
-                <p className="text-xs text-[#C58D36] font-medium">ගම්පහ</p>
+                <p className="text-xs text-[#C58D36] font-medium">හෙට්ටියාදෙණිය, ගම්පහ</p>
               </div>
 
               <ul className="space-y-2 text-xs sm:text-[13px] text-[#6B635B]">
                 <li className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-[#842A35] shrink-0 mt-0.5" />
-                  <span>ගම්පහ, ශ්‍රී ලංකාව</span>
+                  <span>ශ්‍රී සුදර්ශන ධර්ම නිකේතනය, හෙට්ටියාදෙණිය, ගම්පහ</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-[#842A35] shrink-0" />
@@ -116,7 +116,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#6B635B] gap-2 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} ගම්පහ විහාරස්ථානය. සියලු හිමිකම් ඇවිරිණි.</p>
+          <p>© {new Date().getFullYear()} ශ්‍රී සුදර්ශන ධර්ම නිකේතනය - හෙට්ටියාදෙණිය, ගම්පහ. සියලු හිමිකම් ඇවිරිණි.</p>
           <p className="text-[#C58D36]">Sacred Serenity — Modern Sri Lankan Buddhist Temple Experience</p>
         </div>
       </div>

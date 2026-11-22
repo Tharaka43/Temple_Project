@@ -5,7 +5,7 @@ import { HomePage } from './components/pages/HomePage';
 import { DanaCalendar } from './components/pages/DanaCalendar';
 import { DanaBookingForm } from './components/pages/DanaBookingForm';
 import { AdminDashboard } from './components/pages/AdminDashboard';
-import type { ScreenType, BookingRecord } from './types';
+import type { ScreenType, BookingRecord, ContributionType } from './types';
 import { INITIAL_ADMIN_BOOKINGS } from './data/mockData';
 import { Layers, Sparkles, Home, Calendar, FileText, Shield } from 'lucide-react';
 
@@ -13,11 +13,15 @@ export function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [selectedBookingDate, setSelectedBookingDate] = useState<string>('2025 පෙබරවාරි 14 (සිකුරාදා)');
   const [selectedDanaType, setSelectedDanaType] = useState<string>('හීල් දානය');
+  const [selectedContributionType, setSelectedContributionType] = useState<ContributionType>('preparation');
   const [bookingsList, setBookingsList] = useState<BookingRecord[]>(INITIAL_ADMIN_BOOKINGS);
 
-  const handleSelectBookingDate = (dateStr: string, danaType: string) => {
+  const handleSelectBookingDate = (dateStr: string, danaType: string, contributionType?: ContributionType) => {
     setSelectedBookingDate(dateStr);
     setSelectedDanaType(danaType);
+    if (contributionType) {
+      setSelectedContributionType(contributionType);
+    }
   };
 
   const handleBookingSubmitted = (newBooking: BookingRecord) => {
@@ -66,6 +70,7 @@ export function App() {
             onBookingSubmitted={handleBookingSubmitted}
             initialDate={selectedBookingDate}
             initialDanaType={selectedDanaType}
+            initialContributionType={selectedContributionType}
           />
         )}
 
